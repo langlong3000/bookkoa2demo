@@ -1,0 +1,8 @@
+{
+    "name":"node-app",
+    "script":"app.js",
+    "cwd":"./",
+    "watch":true,
+    "instances":"max",
+    "exec_mode":"cluster"
+}

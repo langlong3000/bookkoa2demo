@@ -1,0 +1,70 @@
+{% extends '../layout.html' %} {% block title%}{{ title }}{% endblock %} {% block content %}
+
+<div class="container">
+    <div class="mb-20">
+        <a class="btn btn-primary" href="./index.php?r=site/edit-book">Create a new book 📖</a>
+    </div>
+    <table id="JS-books-table" class="table table-bordered">
+        <colgroup>
+            <col width="10%">
+            <col width="30%">
+            <col width="20%">
+            <col width="20%">
+
+
+        </colgroup>
+        <thead>
+            <tr>
+                <th>图书编号</th>
+                <th>书名</th>
+                <th>描述</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="mt--15">
+    </div>
+</div>
+<script>
+    axios.get('/book/booklist')
+        .then(function (response) {
+
+            $('#JS-books-table tbody').html(
+                response.data.map((book) => {
+                    return (
+                        "<tr>" +
+                        "<td>" + book.id + "</td>" +
+                        "<td>" + book.title + "</td>" +
+                        "<td>" + book.describe + "</td>" +
+                        "<td>" + book.create_time_at + "</td>" +
+                        "<td>" +
+                        "<a class='btn btn-default btn-sm' href='./index.php?r=site/edit-book&id=" + book.id + "'>编辑</a>" +
+                        "<div onclick='deteleBook(this," + book.id + ")' class='btn btn-danger btn-sm ml-10'>删除</div>" +
+                        "</td>" +
+                        "</tr>"
+                    )
+                }).join('')
+            );
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    function deteleBook(that,id) {
+        var trNode = $(that).closest('tr');
+        axios.post(`/book/delete/`,
+            { params: { id } })
+            .then(function (response) {
+                console.log(response);
+                if (response.data.success) {
+                    trNode.remove();
+                    alert('删除成功');
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+    }
+
+</script> {% endblock %}
